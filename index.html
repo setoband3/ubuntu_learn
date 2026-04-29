@@ -261,6 +261,7 @@
       <a href="#day1" class="active">Day 1 — 2026/04/29</a>
       <a href="#day2">Day 2 — 2026/04/29</a>
       <a href="#day3">Day 3 — 2026/04/29</a>
+      <a href="#day4">Day 4 — 2026/04/29</a>
     </nav>
   </aside>
 
@@ -665,6 +666,107 @@
         <span class="tag">fetch API</span>
         <span class="tag">express.static</span>
         <span class="tag">PostgreSQL</span>
+        <span class="tag">Webアプリ</span>
+      </div>
+    </section>
+
+    <!-- Day 4 -->
+    <section class="day-section" id="day4">
+      <div class="day-header">
+        <span class="day-badge">Day 4</span>
+        <span class="day-title">お気に入りリンク管理アプリ完成</span>
+        <span class="day-date">2026年4月29日</span>
+      </div>
+
+      <!-- 完成した機能 -->
+      <div class="card">
+        <div class="card-title">完成した機能</div>
+        <table class="kw-table">
+          <tr><th>機能</th><th>使ったSQL</th></tr>
+          <tr><td>ジャンル一覧表示</td><td class="kw">SELECT * FROM genres</td></tr>
+          <tr><td>ジャンル追加</td><td class="kw">INSERT INTO genres</td></tr>
+          <tr><td>ジャンル削除</td><td class="kw">DELETE FROM genres WHERE id = $1</td></tr>
+          <tr><td>お気に入り一覧（ジャンル名付き）</td><td class="kw">SELECT + LEFT JOIN</td></tr>
+          <tr><td>お気に入り登録</td><td class="kw">INSERT INTO favorites</td></tr>
+          <tr><td>お気に入り編集</td><td class="kw">UPDATE favorites SET ... WHERE id</td></tr>
+          <tr><td>お気に入り削除</td><td class="kw">DELETE FROM favorites WHERE id</td></tr>
+          <tr><td>ジャンル別絞り込み</td><td class="kw">filter（フロント側で処理）</td></tr>
+        </table>
+      </div>
+
+      <!-- DB設計 -->
+      <div class="card">
+        <div class="card-title">データベース設計（favoritesdb）</div>
+        <div class="cmd-block">
+          <div class="cmd-line"><span class="cmd" style="color:#64748b">-- ジャンルテーブル</span></div>
+          <div class="cmd-line"><span class="cmd">genres</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;id    SERIAL PRIMARY KEY</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;name  TEXT NOT NULL</span></div>
+          <div class="cmd-line" style="margin-top:12px;"><span class="cmd" style="color:#64748b">-- お気に入りテーブル</span></div>
+          <div class="cmd-line"><span class="cmd">favorites</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;id        SERIAL PRIMARY KEY</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;title     TEXT NOT NULL</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;url       TEXT NOT NULL</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;genre_id  INTEGER REFERENCES genres(id) <span class="comment"># 外部キー</span></span></div>
+        </div>
+        <div class="memo">
+          <strong>REFERENCES（外部キー）：</strong> favoritesのgenre_idは必ずgenresのidを参照する。テーブル同士を紐付ける仕組み。
+        </div>
+      </div>
+
+      <!-- LEFT JOIN -->
+      <div class="card">
+        <div class="card-title">今日の新しいSQL：LEFT JOIN</div>
+        <div class="cmd-block">
+          <div class="cmd-line"><span class="cmd" style="color:#64748b">-- 2つのテーブルを結合してジャンル名も一緒に取得</span></div>
+          <div class="cmd-line"><span class="cmd">SELECT f.*, g.name as genre_name</span></div>
+          <div class="cmd-line"><span class="cmd">FROM favorites f</span></div>
+          <div class="cmd-line"><span class="cmd">LEFT JOIN genres g ON f.genre_id = g.id</span></div>
+          <div class="cmd-line"><span class="cmd">ORDER BY f.id DESC;</span></div>
+        </div>
+        <div class="memo">
+          <strong>LEFT JOIN：</strong> 左のテーブル（favorites）を基準に、右のテーブル（genres）を結合する。genre_idが一致する行のgenre名を取得できる。
+        </div>
+      </div>
+
+      <!-- ファイル構成 -->
+      <div class="card">
+        <div class="card-title">ファイル構成（~/favapp）</div>
+        <div class="cmd-block">
+          <div class="cmd-line"><span class="cmd">~/favapp/</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;├── index.js &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># APIサーバー（ポート4000）</span></span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;├── package.json</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;└── public/</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── index.html &nbsp;<span class="comment"># ブラウザ画面</span></span></div>
+        </div>
+        <div class="memo">
+          <strong>アクセス：</strong> http://192.168.11.63:4000 &nbsp;／&nbsp; <strong>起動：</strong> node index.js
+        </div>
+      </div>
+
+      <!-- キーワード -->
+      <div class="card">
+        <div class="card-title">キーワード・用語</div>
+        <table class="kw-table">
+          <tr><th>用語</th><th>意味</th></tr>
+          <tr><td class="kw">LEFT JOIN</td><td>2つのテーブルを結合してデータを取得する</td></tr>
+          <tr><td class="kw">REFERENCES</td><td>外部キー。別テーブルのIDを参照する設定</td></tr>
+          <tr><td class="kw">外部キー</td><td>テーブル同士を紐付けるための仕組み</td></tr>
+          <tr><td class="kw">PUT</td><td>データを更新するHTTPメソッド（編集に使う）</td></tr>
+          <tr><td class="kw">DELETE</td><td>データを削除するHTTPメソッド</td></tr>
+          <tr><td class="kw">モーダル</td><td>画面の上に重なって表示されるダイアログ</td></tr>
+        </table>
+      </div>
+
+      <div class="tags">
+        <span class="tag">PostgreSQL</span>
+        <span class="tag">LEFT JOIN</span>
+        <span class="tag">外部キー</span>
+        <span class="tag">CRUD</span>
+        <span class="tag">Node.js</span>
+        <span class="tag">Express</span>
+        <span class="tag">PUT</span>
+        <span class="tag">DELETE</span>
         <span class="tag">Webアプリ</span>
       </div>
     </section>
