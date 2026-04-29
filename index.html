@@ -260,6 +260,7 @@
       <div class="nav-section">2026年4月</div>
       <a href="#day1" class="active">Day 1 — 2026/04/29</a>
       <a href="#day2">Day 2 — 2026/04/29</a>
+      <a href="#day3">Day 3 — 2026/04/29</a>
     </nav>
   </aside>
 
@@ -575,6 +576,96 @@
         <span class="tag">curl</span>
         <span class="tag">JSON</span>
         <span class="tag">PostgreSQL</span>
+      </div>
+    </section>
+
+    <!-- Day 3 -->
+    <section class="day-section" id="day3">
+      <div class="day-header">
+        <span class="day-badge">Day 3</span>
+        <span class="day-title">ブラウザで動く社員名簿アプリ完成</span>
+        <span class="day-date">2026年4月29日</span>
+      </div>
+
+      <!-- 完成したもの -->
+      <div class="card">
+        <div class="card-title">完成したアプリの全体像</div>
+        <div class="cmd-block">
+          <div class="cmd-line"><span class="cmd" style="color:#64748b">-- アクセス方法</span></div>
+          <div class="cmd-line"><span class="cmd">ブラウザで http://192.168.11.63:3000 を開く</span></div>
+          <div class="cmd-line" style="margin-top:12px;"><span class="cmd" style="color:#64748b">-- データの流れ</span></div>
+          <div class="cmd-line"><span class="cmd">ブラウザ（HTML フォームに入力・追加ボタン）</span></div>
+          <div class="cmd-line"><span class="cmd" style="color:#475569">&nbsp;&nbsp;&nbsp;&nbsp;↕ HTTP通信（fetch API）</span></div>
+          <div class="cmd-line"><span class="cmd">Node.js APIサーバー（Ubuntu :3000）</span></div>
+          <div class="cmd-line"><span class="cmd" style="color:#475569">&nbsp;&nbsp;&nbsp;&nbsp;↕ SQL（INSERT / SELECT）</span></div>
+          <div class="cmd-line"><span class="cmd">PostgreSQL（mydb / usersテーブル）</span></div>
+          <div class="cmd-line"><span class="cmd" style="color:#475569">&nbsp;&nbsp;&nbsp;&nbsp;↓ 結果を返す</span></div>
+          <div class="cmd-line"><span class="cmd">ブラウザ（一覧テーブルに即反映）</span></div>
+        </div>
+        <div class="memo">
+          <strong>LINEやInstagramも裏では同じ仕組み。</strong> 今日作ったのはその最小版。
+        </div>
+      </div>
+
+      <!-- ファイル構成 -->
+      <div class="card">
+        <div class="card-title">ファイル構成（~/myapp）</div>
+        <div class="cmd-block">
+          <div class="cmd-line"><span class="cmd">~/myapp/</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;├── index.js &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># APIサーバー本体</span></span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;├── package.json &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># プロジェクト設定</span></span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;└── public/</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── index.html &nbsp;<span class="comment"># ブラウザ画面（フォーム・一覧）</span></span></div>
+        </div>
+      </div>
+
+      <!-- index.jsの追加内容 -->
+      <div class="card">
+        <div class="card-title">index.js に追加した行</div>
+        <div class="cmd-block">
+          <div class="cmd-line"><span class="cmd" style="color:#64748b">// publicフォルダのHTMLをブラウザに配信する設定</span></div>
+          <div class="cmd-line"><span class="cmd">app.<span style="color:#f59e0b">use</span>(express.<span style="color:#f59e0b">static</span>('public'));</span></div>
+        </div>
+        <div class="memo">
+          <strong>express.static：</strong> 指定したフォルダのファイルをそのままブラウザに返す機能。これでHTMLをWebサーバーとして配信できる。
+        </div>
+      </div>
+
+      <!-- 動作確認 -->
+      <div class="card">
+        <div class="card-title">データをSSHからも確認できる</div>
+        <div class="cmd-block">
+          <div class="cmd-line"><span class="cmd" style="color:#64748b">-- ブラウザから追加したデータをpsqlで確認</span></div>
+          <div class="cmd-line"><span class="prompt">$</span><span class="cmd">sudo -u postgres psql</span></div>
+          <div class="cmd-line"><span class="prompt">#</span><span class="cmd">\c mydb</span></div>
+          <div class="cmd-line"><span class="prompt">#</span><span class="cmd">SELECT * FROM users;</span></div>
+          <div class="cmd-line" style="margin-top:8px;"><span class="cmd" style="color:#22c55e"> id | name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | email</span></div>
+          <div class="cmd-line"><span class="cmd" style="color:#22c55e">&nbsp; 2 | Seto&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | seto@gmail.com</span></div>
+          <div class="cmd-line"><span class="cmd" style="color:#22c55e">&nbsp; 3 | 瀬戸原一郎 | seto@sofix-ja...</span></div>
+        </div>
+      </div>
+
+      <!-- キーワード -->
+      <div class="card">
+        <div class="card-title">キーワード・用語</div>
+        <table class="kw-table">
+          <tr><th>用語</th><th>意味</th></tr>
+          <tr><td class="kw">express.static</td><td>フォルダ内のファイルをそのままブラウザに配信する機能</td></tr>
+          <tr><td class="kw">fetch API</td><td>ブラウザからHTTP通信をするJavaScriptの機能</td></tr>
+          <tr><td class="kw">async / await</td><td>通信など時間のかかる処理を待つJavaScriptの書き方</td></tr>
+          <tr><td class="kw">innerHTML</td><td>HTML要素の中身を書き換えるJavaScriptの操作</td></tr>
+          <tr><td class="kw">public フォルダ</td><td>ブラウザに公開するファイルを置く場所</td></tr>
+        </table>
+      </div>
+
+      <div class="tags">
+        <span class="tag">Node.js</span>
+        <span class="tag">Express</span>
+        <span class="tag">HTML</span>
+        <span class="tag">fetch API</span>
+        <span class="tag">express.static</span>
+        <span class="tag">PostgreSQL</span>
+        <span class="tag">Webアプリ</span>
       </div>
     </section>
 
