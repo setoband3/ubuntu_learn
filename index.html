@@ -367,11 +367,64 @@
         </div>
       </div>
 
+      <!-- CRUD操作 -->
+      <div class="card">
+        <div class="card-title">CRUD操作（データの追加・取得・更新・削除）</div>
+
+        <div class="cmd-block">
+          <div class="cmd-line">
+            <span class="cmd" style="color:#64748b">-- C: データを追加（Create）</span>
+          </div>
+          <div class="cmd-line">
+            <span class="prompt">#</span>
+            <span class="cmd">INSERT INTO users (name, email) VALUES ('Seto', 'seto@example.com');</span>
+          </div>
+          <div class="cmd-line" style="margin-top:12px;">
+            <span class="cmd" style="color:#64748b">-- R: データを取得（Read）</span>
+          </div>
+          <div class="cmd-line">
+            <span class="prompt">#</span>
+            <span class="cmd">SELECT * FROM users; <span class="comment"># * は全カラムを意味する</span></span>
+          </div>
+          <div class="cmd-line" style="margin-top:12px;">
+            <span class="cmd" style="color:#64748b">-- U: データを更新（Update）</span>
+          </div>
+          <div class="cmd-line">
+            <span class="prompt">#</span>
+            <span class="cmd">UPDATE users SET email = 'seto@gmail.com' WHERE id = 1;</span>
+          </div>
+          <div class="cmd-line" style="margin-top:12px;">
+            <span class="cmd" style="color:#64748b">-- D: データを削除（Delete）</span>
+          </div>
+          <div class="cmd-line">
+            <span class="prompt">#</span>
+            <span class="cmd">DELETE FROM users WHERE id = 1;</span>
+          </div>
+        </div>
+
+        <div class="memo">
+          <strong>WHERE を忘れずに：</strong> UPDATE・DELETE に WHERE をつけないと全件が対象になる。必ず条件を指定する。
+        </div>
+
+        <table class="kw-table" style="margin-top:16px;">
+          <tr><th>操作</th><th>SQL</th><th>意味</th></tr>
+          <tr><td><strong style="color:#7c83ff">C</strong>reate</td><td class="kw">INSERT INTO</td><td>データを追加する</td></tr>
+          <tr><td><strong style="color:#7c83ff">R</strong>ead</td><td class="kw">SELECT</td><td>データを取得する</td></tr>
+          <tr><td><strong style="color:#7c83ff">U</strong>pdate</td><td class="kw">UPDATE ... SET</td><td>データを更新する</td></tr>
+          <tr><td><strong style="color:#7c83ff">D</strong>elete</td><td class="kw">DELETE FROM</td><td>データを削除する</td></tr>
+        </table>
+      </div>
+
       <div class="tags">
         <span class="tag">PostgreSQL</span>
         <span class="tag">psql</span>
         <span class="tag">CREATE DATABASE</span>
         <span class="tag">CREATE TABLE</span>
+        <span class="tag">INSERT</span>
+        <span class="tag">SELECT</span>
+        <span class="tag">UPDATE</span>
+        <span class="tag">DELETE</span>
+        <span class="tag">CRUD</span>
         <span class="tag">sudo</span>
         <span class="tag">SSH</span>
       </div>
