@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ubuntu 学習ノート</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* サイドバー */
+    #sidebar {
+      width: 260px;
+      min-width: 260px;
+      background: #1a1d27;
+      border-right: 1px solid #2d3148;
+      padding: 24px 16px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    #sidebar h1 {
+      font-size: 1rem;
+      color: #7c83ff;
+      letter-spacing: 0.05em;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #2d3148;
+    }
+
+    #sidebar nav a {
+      display: block;
+      padding: 8px 12px;
+      color: #94a3b8;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      margin-bottom: 4px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    #sidebar nav a:hover {
+      background: #2d3148;
+      color: #e2e8f0;
+    }
+
+    #sidebar nav a.active {
+      background: #2d3148;
+      color: #7c83ff;
+    }
+
+    .nav-section {
+      font-size: 0.7rem;
+      color: #475569;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 16px 0 6px 12px;
+    }
+
+    /* メインコンテンツ */
+    #main {
+      flex: 1;
+      padding: 48px;
+      max-width: 860px;
+    }
+
+    .page-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-bottom: 48px;
+    }
+
+    /* 日付セクション */
+    .day-section {
+      margin-bottom: 56px;
+    }
+
+    .day-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .day-badge {
+      background: #7c83ff;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 99px;
+    }
+
+    .day-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+
+    .day-date {
+      color: #475569;
+      font-size: 0.85rem;
+    }
+
+    /* カード */
+    .card {
+      background: #1a1d27;
+      border: 1px solid #2d3148;
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #7c83ff;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 1em;
+      background: #7c83ff;
+      border-radius: 2px;
+    }
+
+    /* コマンドブロック */
+    .cmd-block {
+      background: #0d0f18;
+      border: 1px solid #2d3148;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 12px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.875rem;
+      overflow-x: auto;
+    }
+
+    .cmd-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+
+    .cmd-line:last-child { margin-bottom: 0; }
+
+    .prompt {
+      color: #22c55e;
+      user-select: none;
+      min-width: 16px;
+    }
+
+    .cmd {
+      color: #e2e8f0;
+      flex: 1;
+    }
+
+    .comment {
+      color: #475569;
+      font-style: italic;
+    }
+
+    /* キーワードテーブル */
+    .kw-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 0.875rem;
+    }
+
+    .kw-table th {
+      background: #0d0f18;
+      color: #64748b;
+      font-weight: 600;
+      text-align: left;
+      padding: 10px 14px;
+      border-bottom: 1px solid #2d3148;
+    }
+
+    .kw-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #1e2235;
+      vertical-align: top;
+    }
+
+    .kw-table tr:last-child td { border-bottom: none; }
+
+    .kw {
+      font-family: 'Courier New', monospace;
+      color: #f59e0b;
+      white-space: nowrap;
+    }
+
+    /* メモ */
+    .memo {
+      background: #1e2a1e;
+      border-left: 3px solid #22c55e;
+      border-radius: 0 6px 6px 0;
+      padding: 12px 16px;
+      font-size: 0.875rem;
+      color: #86efac;
+      margin-top: 12px;
+    }
+
+    .memo strong { color: #4ade80; }
+
+    /* タグ */
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .tag {
+      background: #1e2235;
+      color: #94a3b8;
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 99px;
+      border: 1px solid #2d3148;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 768px) {
+      #sidebar { display: none; }
+      #main { padding: 24px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- サイドバー -->
+  <aside id="sidebar">
+    <h1>Ubuntu 学習ノート</h1>
+    <nav>
+      <div class="nav-section">2026年4月</div>
+      <a href="#day1" class="active">Day 1 — 2026/04/29</a>
+    </nav>
+  </aside>
+
+  <!-- メインコンテンツ -->
+  <main id="main">
+    <h1 class="page-title">Ubuntu 学習ノート</h1>
+    <p class="page-subtitle">自宅サーバー（MacBook Pro A1708）でPostgreSQLを学ぶ記録</p>
+
+    <!-- Day 1 -->
+    <section class="day-section" id="day1">
+      <div class="day-header">
+        <span class="day-badge">Day 1</span>
+        <span class="day-title">PostgreSQL 基本操作</span>
+        <span class="day-date">2026年4月29日</span>
+      </div>
+
+      <!-- 環境 -->
+      <div class="card">
+        <div class="card-title">環境</div>
+        <table class="kw-table">
+          <tr><th>項目</th><th>内容</th></tr>
+          <tr><td>マシン</td><td>MacBook Pro A1708（Ubuntu Server 24.04 LTS）</td></tr>
+          <tr><td>固定IP</td><td>192.168.11.63</td></tr>
+          <tr><td>接続方法</td><td>SSH（ターミナルから）</td></tr>
+          <tr><td>PostgreSQL</td><td>バージョン 18.3</td></tr>
+        </table>
+      </div>
+
+      <!-- やったこと -->
+      <div class="card">
+        <div class="card-title">今日やったこと</div>
+
+        <div class="cmd-block">
+          <div class="cmd-line">
+            <span class="prompt">$</span>
+            <span class="cmd">ssh seto@192.168.11.63 <span class="comment"># サーバーにSSH接続</span></span>
+          </div>
+          <div class="cmd-line">
+            <span class="prompt">$</span>
+            <span class="cmd">sudo -u postgres psql <span class="comment"># PostgreSQLに接続</span></span>
+          </div>
+          <div class="cmd-line">
+            <span class="prompt">#</span>
+            <span class="cmd">\l <span class="comment"># データベース一覧を表示</span></span>
+          </div>
+          <div class="cmd-line">
+            <span class="prompt">#</span>
+            <span class="cmd">CREATE DATABASE mydb; <span class="comment"># データベースを作成</span></span>
+          </div>
+          <div class="cmd-line">
+            <span class="prompt">#</span>
+            <span class="cmd">\c mydb <span class="comment"># mydbに接続（connect）</span></span>
+          </div>
+          <div class="cmd-line">
+            <span class="prompt">#</span>
+            <span class="cmd">CREATE TABLE users (id SERIAL PRIMARY KEY, name TEXT, email TEXT); <span class="comment"># テーブル作成</span></span>
+          </div>
+          <div class="cmd-line">
+            <span class="prompt">#</span>
+            <span class="cmd">\dt <span class="comment"># テーブル一覧を表示</span></span>
+          </div>
+        </div>
+
+        <div class="memo">
+          <strong>ポイント：</strong> psqlの中のコマンドは <code>\</code>（バックスラッシュ）始まり。SQLは <code>;</code>（セミコロン）で終わる。
+        </div>
+      </div>
+
+      <!-- キーワード -->
+      <div class="card">
+        <div class="card-title">キーワード・用語</div>
+        <table class="kw-table">
+          <tr><th>コマンド／用語</th><th>意味</th></tr>
+          <tr><td class="kw">sudo</td><td>管理者権限で実行する</td></tr>
+          <tr><td class="kw">sudo -u postgres</td><td>postgresユーザーとして実行する</td></tr>
+          <tr><td class="kw">psql</td><td>PostgreSQLに接続するコマンド</td></tr>
+          <tr><td class="kw">\l</td><td>データベース一覧を表示（list）</td></tr>
+          <tr><td class="kw">\c [DB名]</td><td>指定したデータベースに接続（connect）</td></tr>
+          <tr><td class="kw">\dt</td><td>テーブル一覧を表示</td></tr>
+          <tr><td class="kw">\q</td><td>psqlを終了（quit）</td></tr>
+          <tr><td class="kw">CREATE DATABASE</td><td>データベースを作成するSQL</td></tr>
+          <tr><td class="kw">CREATE TABLE</td><td>テーブルを作成するSQL</td></tr>
+          <tr><td class="kw">SERIAL</td><td>自動で連番を振る型（1,2,3...）</td></tr>
+          <tr><td class="kw">PRIMARY KEY</td><td>レコードを一意に識別するキー</td></tr>
+          <tr><td class="kw">TEXT</td><td>文字列を格納するデータ型</td></tr>
+        </table>
+      </div>
+
+      <!-- 作ったもの -->
+      <div class="card">
+        <div class="card-title">作ったもの</div>
+        <p style="font-size:0.875rem; color:#94a3b8; margin-bottom:12px;">データベース <code style="color:#f59e0b">mydb</code> の中に <code style="color:#f59e0b">users</code> テーブルを作成</p>
+        <div class="cmd-block">
+          <div class="cmd-line">
+            <span class="cmd" style="color:#64748b">-- usersテーブルの構造</span>
+          </div>
+          <div class="cmd-line">
+            <span class="cmd">id    SERIAL PRIMARY KEY  <span class="comment"># 自動連番ID</span></span>
+          </div>
+          <div class="cmd-line">
+            <span class="cmd">name  TEXT                <span class="comment"># 名前</span></span>
+          </div>
+          <div class="cmd-line">
+            <span class="cmd">email TEXT                <span class="comment"># メールアドレス</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tags">
+        <span class="tag">PostgreSQL</span>
+        <span class="tag">psql</span>
+        <span class="tag">CREATE DATABASE</span>
+        <span class="tag">CREATE TABLE</span>
+        <span class="tag">sudo</span>
+        <span class="tag">SSH</span>
+      </div>
+    </section>
+
+  </main>
+</body>
+</html>
