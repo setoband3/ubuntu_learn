@@ -259,6 +259,7 @@
     <nav>
       <div class="nav-section">2026年4月</div>
       <a href="#day1" class="active">Day 1 — 2026/04/29</a>
+      <a href="#day2">Day 2 — 2026/04/29</a>
     </nav>
   </aside>
 
@@ -427,6 +428,153 @@
         <span class="tag">CRUD</span>
         <span class="tag">sudo</span>
         <span class="tag">SSH</span>
+      </div>
+    </section>
+
+    <!-- Day 2 -->
+    <section class="day-section" id="day2">
+      <div class="day-header">
+        <span class="day-badge">Day 2</span>
+        <span class="day-title">Node.js APIサーバー構築</span>
+        <span class="day-date">2026年4月29日</span>
+      </div>
+
+      <!-- 構成 -->
+      <div class="card">
+        <div class="card-title">作ったものの全体像</div>
+        <div class="cmd-block">
+          <div class="cmd-line">
+            <span class="cmd" style="color:#64748b">-- アプリの構成</span>
+          </div>
+          <div class="cmd-line">
+            <span class="cmd">Mac（ブラウザ・curl）</span>
+          </div>
+          <div class="cmd-line">
+            <span class="cmd" style="color:#475569">&nbsp;&nbsp;&nbsp;&nbsp;↕ HTTP通信</span>
+          </div>
+          <div class="cmd-line">
+            <span class="cmd">Node.js APIサーバー（Ubuntu :3000）</span>
+          </div>
+          <div class="cmd-line">
+            <span class="cmd" style="color:#475569">&nbsp;&nbsp;&nbsp;&nbsp;↕ SQL</span>
+          </div>
+          <div class="cmd-line">
+            <span class="cmd">PostgreSQL（mydb）</span>
+          </div>
+        </div>
+        <div class="memo">
+          <strong>FirebaseのREST APIと同じ構造。</strong> Firebaseはこの仕組みをGoogleが全部用意してくれているサービス。今回は自分で作った。
+        </div>
+      </div>
+
+      <!-- インストール -->
+      <div class="card">
+        <div class="card-title">インストール・セットアップ</div>
+        <div class="cmd-block">
+          <div class="cmd-line">
+            <span class="prompt">$</span>
+            <span class="cmd">sudo apt install -y nodejs npm <span class="comment"># Node.jsとnpmをインストール</span></span>
+          </div>
+          <div class="cmd-line">
+            <span class="prompt">$</span>
+            <span class="cmd">mkdir ~/myapp && cd ~/myapp <span class="comment"># アプリフォルダを作成</span></span>
+          </div>
+          <div class="cmd-line">
+            <span class="prompt">$</span>
+            <span class="cmd">npm init -y <span class="comment"># プロジェクトを初期化</span></span>
+          </div>
+          <div class="cmd-line">
+            <span class="prompt">$</span>
+            <span class="cmd">npm install express pg <span class="comment"># ライブラリをインストール</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- コード -->
+      <div class="card">
+        <div class="card-title">APIサーバーのコード（index.js）</div>
+        <div class="cmd-block">
+          <div class="cmd-line"><span class="cmd" style="color:#64748b">// 必要なライブラリを読み込む</span></div>
+          <div class="cmd-line"><span class="cmd"><span style="color:#7c83ff">const</span> express = <span style="color:#f59e0b">require</span>('express');</span></div>
+          <div class="cmd-line"><span class="cmd"><span style="color:#7c83ff">const</span> { Pool } = <span style="color:#f59e0b">require</span>('pg');</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;</span></div>
+          <div class="cmd-line"><span class="cmd"><span style="color:#7c83ff">const</span> app = <span style="color:#f59e0b">express</span>();</span></div>
+          <div class="cmd-line"><span class="cmd">app.<span style="color:#f59e0b">use</span>(express.<span style="color:#f59e0b">json</span>());</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;</span></div>
+          <div class="cmd-line"><span class="cmd" style="color:#64748b">// PostgreSQL接続設定</span></div>
+          <div class="cmd-line"><span class="cmd"><span style="color:#7c83ff">const</span> pool = <span style="color:#7c83ff">new</span> <span style="color:#f59e0b">Pool</span>({ user: 'postgres', host: 'localhost', database: 'mydb', password: 'postgres', port: 5432 });</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;</span></div>
+          <div class="cmd-line"><span class="cmd" style="color:#64748b">// GET /users — 全件取得</span></div>
+          <div class="cmd-line"><span class="cmd">app.<span style="color:#f59e0b">get</span>('/users', <span style="color:#7c83ff">async</span> (req, res) => {</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;<span style="color:#7c83ff">const</span> result = <span style="color:#7c83ff">await</span> pool.<span style="color:#f59e0b">query</span>('SELECT * FROM users');</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;res.<span style="color:#f59e0b">json</span>(result.rows);</span></div>
+          <div class="cmd-line"><span class="cmd">});</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;</span></div>
+          <div class="cmd-line"><span class="cmd" style="color:#64748b">// POST /users — データ追加</span></div>
+          <div class="cmd-line"><span class="cmd">app.<span style="color:#f59e0b">post</span>('/users', <span style="color:#7c83ff">async</span> (req, res) => {</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;<span style="color:#7c83ff">const</span> { name, email } = req.body;</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;<span style="color:#7c83ff">const</span> result = <span style="color:#7c83ff">await</span> pool.<span style="color:#f59e0b">query</span>('INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *', [name, email]);</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;&nbsp;res.<span style="color:#f59e0b">json</span>(result.rows[0]);</span></div>
+          <div class="cmd-line"><span class="cmd">});</span></div>
+          <div class="cmd-line"><span class="cmd">&nbsp;</span></div>
+          <div class="cmd-line"><span class="cmd">app.<span style="color:#f59e0b">listen</span>(3000);</span></div>
+        </div>
+      </div>
+
+      <!-- 動作確認 -->
+      <div class="card">
+        <div class="card-title">動作確認（Macのターミナルから）</div>
+        <div class="cmd-block">
+          <div class="cmd-line"><span class="cmd" style="color:#64748b"># データ追加（POST）</span></div>
+          <div class="cmd-line">
+            <span class="prompt">$</span>
+            <span class="cmd">curl -X POST http://192.168.11.63:3000/users \</span>
+          </div>
+          <div class="cmd-line">
+            <span class="cmd">&nbsp;&nbsp;-H "Content-Type: application/json" \</span>
+          </div>
+          <div class="cmd-line">
+            <span class="cmd">&nbsp;&nbsp;-d '{"name":"Seto","email":"seto@gmail.com"}'</span>
+          </div>
+          <div class="cmd-line" style="margin-top:12px;"><span class="cmd" style="color:#64748b"># 全件取得（GET）</span></div>
+          <div class="cmd-line">
+            <span class="prompt">$</span>
+            <span class="cmd">curl http://192.168.11.63:3000/users</span>
+          </div>
+        </div>
+        <div class="memo">
+          <strong>サーバー起動：</strong> node index.js　／　<strong>停止：</strong> Ctrl + C
+        </div>
+      </div>
+
+      <!-- キーワード -->
+      <div class="card">
+        <div class="card-title">キーワード・用語</div>
+        <table class="kw-table">
+          <tr><th>用語</th><th>意味</th></tr>
+          <tr><td class="kw">Node.js</td><td>JavaScriptをサーバー側で動かす仕組み</td></tr>
+          <tr><td class="kw">npm</td><td>Node.jsのライブラリ管理ツール</td></tr>
+          <tr><td class="kw">Express</td><td>Node.jsでWebサーバーを作るライブラリ</td></tr>
+          <tr><td class="kw">pg</td><td>Node.jsからPostgreSQLに接続するライブラリ</td></tr>
+          <tr><td class="kw">API</td><td>アプリ同士がデータをやり取りする窓口</td></tr>
+          <tr><td class="kw">GET</td><td>データを取得するHTTPメソッド</td></tr>
+          <tr><td class="kw">POST</td><td>データを送信・追加するHTTPメソッド</td></tr>
+          <tr><td class="kw">curl</td><td>ターミナルからHTTP通信を試すコマンド</td></tr>
+          <tr><td class="kw">JSON</td><td>データをやり取りする形式 {"key":"value"}</td></tr>
+          <tr><td class="kw">nano</td><td>ターミナル上で動くテキストエディタ</td></tr>
+        </table>
+      </div>
+
+      <div class="tags">
+        <span class="tag">Node.js</span>
+        <span class="tag">Express</span>
+        <span class="tag">npm</span>
+        <span class="tag">API</span>
+        <span class="tag">GET</span>
+        <span class="tag">POST</span>
+        <span class="tag">curl</span>
+        <span class="tag">JSON</span>
+        <span class="tag">PostgreSQL</span>
       </div>
     </section>
 
